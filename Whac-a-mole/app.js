@@ -8,7 +8,7 @@ const timeLeft = document.querySelector('#time-left');
 let result = 0;
 let hitPosition;
 let timerId = null;
-let currentTime = 10
+let currentTime = 60
 
 // remove the 'mole' class
 // randomaser for square 'mole' and adding the class to a div
