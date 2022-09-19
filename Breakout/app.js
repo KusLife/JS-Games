@@ -1,8 +1,15 @@
 const grid = document.querySelector('.grid');
+
+const displayScore = document.querySelector('#score');
 const blockWidth = 100;
 const blockHeight = 20;
-const blockSize = 560;
-let ballTimerId
+const boardWidth = 560;
+const boardHeight = 300;
+const ballDiametr = 20;
+let ballTimerId;
+let xDirection = 2;
+let yDirection = 2;
+let score = 0;
 
 const userStart = [230, 10];
 let currentPosition = userStart;
@@ -66,10 +73,10 @@ function drawUser() {
 // Draw the ball
 const ball = document.createElement('div');
 ball.classList.add('ball');
-drawBall()
+drawBall();
 grid.appendChild(ball);
 
-// Move user 
+// Move user
 function moveUser(e) {
   switch (e.key) {
     case 'ArrowLeft':
@@ -79,7 +86,7 @@ function moveUser(e) {
       }
       break;
     case 'ArrowRight':
-      if (currentPosition[0] < blockSize - blockWidth) {
+      if (currentPosition[0] < boardWidth - blockWidth) {
         currentPosition[0] += 10;
         drawUser();
       }
@@ -95,11 +102,79 @@ function drawBall() {
   ball.style.bottom = currentBallPosition[1] + 'px';
 }
 
-// Move ball
+// Move the ball
 function moveBall() {
-  currentBallPosition[0] += 2
-  currentBallPosition[1] += 2
-  drawBall()
+  currentBallPosition[0] += xDirection;
+  currentBallPosition[1] += yDirection;
+  drawBall();
+  checkForCollisions();
 }
 
-ballTimerId = setInterval(moveBall, 30)
+ballTimerId = setInterval(moveBall, 30);
+
+// Check for collisions
+function checkForCollisions() {
+  // Check for blocks collision
+  for (let i = 0; i < blocks.length; i++) {
+    if (
+      currentBallPosition[0] > blocks[i].bottomLeft[0] &&
+      currentBallPosition[0] < blocks[i].bottomRight[0] &&
+      currentBallPosition[1] + ballDiametr > blocks[i].bottomLeft[1] &&
+      currentBallPosition[1] < blocks[i].bottomRight[1]
+    ) {
+      const allBlocks = Array.from(document.querySelectorAll('.block'));
+      allBlocks[i].classList.remove('block');
+      blocks.splice(i, 1);
+      changeDirection();
+      score++;
+      displayScore.innerHTML = score;
+    }
+
+    // Check if I won
+    if (blocks.length === 0) {
+       displayScore.innerHTML = 'YOU WIN!'
+       clearInterval(ballTimerId)
+       document.removeEventListener('keydown', moveUser)
+
+    }
+  }
+
+  // Check for collision with walls
+  if (
+    currentBallPosition[0] >= boardWidth - ballDiametr ||
+    currentBallPosition[1] >= boardHeight - ballDiametr ||
+    currentBallPosition[0] <= 0
+  ) {
+    changeDirection();
+  }
+
+  // Check for user collision
+  if (
+    currentBallPosition[0] > currentPosition[0] &&
+    currentBallPosition[0] < currentPosition[0] + blockWidth &&
+    currentBallPosition[1] > currentPosition[1] &&
+    currentBallPosition[1] < currentPosition[1] + blockHeight
+  ) {
+    changeDirection();
+  }
+
+  // Check if the game finished
+  if (currentBallPosition[1] <= 0) {
+    clearInterval(ballTimerId);
+    displayScore.innerHTML = 'Game ovar';
+    document.removeEventListener('keydown', moveUser);
+  }
+}
+
+// Change ball diraction
+function changeDirection() {
+  if (xDirection === 2 && yDirection === 2) {
+    yDirection = -2;
+  } else if (xDirection === 2 && yDirection === -2) {
+    xDirection = -2;
+  } else if (xDirection === -2 && yDirection === -2) {
+    yDirection = 2;
+  } else if (xDirection === -2 && yDirection === 2) {
+    xDirection = 2;
+  }
+}
