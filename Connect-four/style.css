@@ -1,0 +1,24 @@
+.grid {
+    border: 1px solid saddlebrown;
+    width: 140px;
+    height: 120px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid div {
+    width: 20px;
+    height: 20px;
+
+}
+
+.taken {
+    border-radius: 10px;
+}
+
+.player-one {
+    background-color: rgb(198, 198, 201);
+}
+.player-two {
+    background-color: rgb(54, 43, 45);
+}
