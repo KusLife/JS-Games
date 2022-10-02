@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     squares[i].onclick = () => {
       // If the square bellow is taken, then you can step on top of it
       if (squares[i + 7].classList.contains('taken')) {
-        console.log(i)
         // Here I check how's turn now and set a ball poin, switch the second player
         if (currentPlayer == 1) {
           squares[i].classList.add('taken');
